@@ -1,0 +1,43 @@
+services:
+  nzbget:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/nzbget.png'
+      net.unraid.docker.webui: 'http://192.168.1.154:6789'
+      net.unraid.docker.shell: ''
+  prowlarr:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/prowlarr.png'
+      net.unraid.docker.webui: 'http://192.168.1.154:9696'
+      net.unraid.docker.shell: ''
+  radarr:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/radarr.png'
+      net.unraid.docker.webui: 'http://192.168.1.154:7878'
+      net.unraid.docker.shell: ''
+  sonarr:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/sonarr.png'
+      net.unraid.docker.webui: 'http://192.168.1.154:8989'
+      net.unraid.docker.shell: ''
+  overseerr:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/overseerr.png'
+      net.unraid.docker.webui: 'http://192.168.1.154:5055'
+      net.unraid.docker.shell: ''
+  plex:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/plex.png'
+      net.unraid.docker.webui: ''
+      net.unraid.docker.shell: ''
+  dnsmasq:
+    labels:
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: 'https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/azure-dns.png'
+      net.unraid.docker.webui: 'http://192.168.1.154:53'
+      net.unraid.docker.shell: ''
