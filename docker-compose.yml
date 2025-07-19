@@ -11,7 +11,8 @@ services:
       - vault-data:/vault/file
     cap_add:
       - IPC_LOCK
-    entrypoint: /vault/config/vault-startup.sh
+    user: "1000:1000"
+    entrypoint: sh /vault/config/vault-startup.sh
     networks:
       - roar_net
 
@@ -58,28 +59,11 @@ services:
     image: vault:latest
     container_name: vault-agent-nzbget
     volumes:
+      - ./vault-config:/vault/config
       - secrets:/vault/secrets
-    environment:
-      - VAULT_ADDR=http://vault:8200
-    command: >
-      vault agent -config=- <<EOF
-      pid_file = "/tmp/pidfile"
-      auto_auth {
-        method "approle" {
-          mount_path = "auth/approle"
-          config = {
-            role_id_file_path = "/vault/secrets/role_id"
-            secret_id_file_path = "/vault/secrets/secret_id"
-            remove_secret_id_file_after_read = "false"
-          }
-        }
-      }
-      template {
-        source      = "/vault/secrets/nzbget.ctmpl"
-        destination = "/vault/secrets/nzbget.env"
-        command     = "sh -c 'kill -HUP $(cat /tmp/pidfile)'"
-      }
-      EOF
+    cap_add:
+      - IPC_LOCK
+    command: "vault agent -config=/vault/config/agent-config.hcl"
     depends_on:
       - vault
     networks:
