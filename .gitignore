@@ -1,2 +1,4 @@
-.env
-.env-flighttracking
+.env-back
+.env-flighttracking.back
+backups/
+
