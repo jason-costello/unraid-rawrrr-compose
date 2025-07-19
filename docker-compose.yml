@@ -1,4 +1,20 @@
+version: '3.7'
+
 services:
+  vault:
+    image: vault:latest
+    container_name: vault
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./vault-config:/vault/config
+      - vault-data:/vault/file
+    cap_add:
+      - IPC_LOCK
+    entrypoint: /vault/config/vault-startup.sh
+    networks:
+      - roar_net
+
   plex:
     image: binhex/arch-plex:latest
     container_name: plex
@@ -28,6 +44,7 @@ services:
     volumes:
       - /mnt/user/appdata/binhex-nzbget:/config
       - /mnt/user/rrr-data/usenet:/data/usenet
+      - secrets:/vault/secrets
     ports:
       - 6789:6789
     networks:
@@ -35,6 +52,38 @@ services:
     restart: unless-stopped
     depends_on:
       - dnsmasq
+      - vault
+
+  vault-agent-nzbget:
+    image: vault:latest
+    container_name: vault-agent-nzbget
+    volumes:
+      - secrets:/vault/secrets
+    environment:
+      - VAULT_ADDR=http://vault:8200
+    command: >
+      vault agent -config=- <<EOF
+      pid_file = "/tmp/pidfile"
+      auto_auth {
+        method "approle" {
+          mount_path = "auth/approle"
+          config = {
+            role_id_file_path = "/vault/secrets/role_id"
+            secret_id_file_path = "/vault/secrets/secret_id"
+            remove_secret_id_file_after_read = "false"
+          }
+        }
+      }
+      template {
+        source      = "/vault/secrets/nzbget.ctmpl"
+        destination = "/vault/secrets/nzbget.env"
+        command     = "sh -c 'kill -HUP $(cat /tmp/pidfile)'"
+      }
+      EOF
+    depends_on:
+      - vault
+    networks:
+      - roar_net
 
   prowlarr:
     image: binhex/arch-prowlarr:latest
@@ -124,6 +173,14 @@ services:
       - /mnt/user/appdata/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf
     networks:
       - roar_net
+
+volumes:
+  vault-data:
+  secrets:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
       
 networks:
   roar_net:

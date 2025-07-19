@@ -1,0 +1,4 @@
+{{ with secret "secret/data/nzbget" }}
+NZBGET_USERNAME={{ .Data.data.username }}
+NZBGET_PASSWORD={{ .Data.data.password }}
+{{ end }}
